@@ -1,2 +1,10 @@
+#qrcodeDisplay canvas,
+#qrcodeDisplay svg {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Useful for scaling, though canvas/svg scale differently than img */
+}
+
+/* Previous comments can be kept or removed, the above rule is the important addition */
 /* All styles are now handled by Tailwind CSS via utility classes in index.html */
 /* This file can be kept empty or removed if not needed for any specific overrides. */
