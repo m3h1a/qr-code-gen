@@ -4,37 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
-    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css"> <!-- Will be emptied later -->
 </head>
-<body>
-    <div id="app-container">
-        <h1>QR Code Generator</h1>
-        <div id="input-controls">
-            <label for="dataInput">Data (URL/Text):</label>
-            <input type="text" id="dataInput" placeholder="Enter data or URL">
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div id="app-container" class="bg-white p-6 md:p-8 rounded-lg shadow-xl w-full max-w-lg">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">QR Code Generator</h1>
+        
+        <div id="input-controls" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="col-span-1 md:col-span-2">
+                <label for="dataInput" class="block text-sm font-medium text-gray-700 mb-1">Data (URL/Text):</label>
+                <input type="text" id="dataInput" placeholder="Enter data or URL" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
 
-            <label for="sizeInput">Size (pixels):</label>
-            <input type="number" id="sizeInput" value="256">
+            <div>
+                <label for="sizeInput" class="block text-sm font-medium text-gray-700 mb-1">Size (pixels):</label>
+                <input type="number" id="sizeInput" value="256" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
 
-            <label for="fillColorInput">Fill Color:</label>
-            <input type="color" id="fillColorInput" value="#000000">
+            <div>
+                <label for="fillColorInput" class="block text-sm font-medium text-gray-700 mb-1">Fill Color:</label>
+                <input type="color" id="fillColorInput" value="#000000" class="mt-1 block w-full h-10 border-gray-300 rounded-md shadow-sm cursor-pointer">
+            </div>
 
-            <label for="backColorInput">Background Color:</label>
-            <input type="color" id="backColorInput" value="#ffffff">
+            <div>
+                <label for="backColorInput" class="block text-sm font-medium text-gray-700 mb-1">Background Color:</label>
+                <input type="color" id="backColorInput" value="#ffffff" class="mt-1 block w-full h-10 border-gray-300 rounded-md shadow-sm cursor-pointer">
+            </div>
+            
+            <div>
+                <label for="formatSelect" class="block text-sm font-medium text-gray-700 mb-1">Image Format:</label>
+                <select id="formatSelect" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="png" selected>PNG</option>
+                    <option value="jpeg">JPEG</option>
+                    <option value="svg">SVG</option>
+                </select>
+            </div>
 
-            <label for="formatSelect">Image Format:</label>
-            <select id="formatSelect">
-                <option value="png" selected>PNG</option>
-                <option value="jpeg">JPEG</option>
-            </select>
+            <div>
+                <label for="dotStyleSelect" class="block text-sm font-medium text-gray-700 mb-1">Dot Style:</label>
+                <select id="dotStyleSelect" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                    <option value="square" selected>Square</option>
+                    <option value="dots">Dots</option>
+                    <option value="rounded">Rounded</option>
+                    <option value="extra-rounded">Extra Rounded</option>
+                    <option value="classy">Classy</option>
+                    <option value="classy-rounded">Classy Rounded</option>
+                </select>
+            </div>
+            
+            <div class="col-span-1 md:col-span-2">
+                <label for="emojiInput" class="block text-sm font-medium text-gray-700 mb-1">Emoji (optional):</label>
+                <input type="text" id="emojiInput" placeholder="Enter an emoji" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+            </div>
         </div>
 
-        <button id="generateBtn">Generate QR Code</button>
-        <div id="qrcodeDisplay"></div>
-        <button id="downloadBtn" style="display: none;">Download QR Code</button>
+        <div id="qrcodeDisplay" class="flex justify-center items-center my-8 min-h-[256px] w-full bg-gray-50 p-4 border border-dashed border-gray-300 rounded-md">
+            <!-- QR Code will be appended here by script.js -->
+        </div>
+        
+        <button id="downloadBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition ease-in-out duration-150 hidden">
+            Download QR Code
+        </button>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
