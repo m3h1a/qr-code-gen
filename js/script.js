@@ -151,7 +151,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             qrCodeInstance = new QRCodeStyling(options);
-            console.log("[Debug] QRCodeStyling instance created with options:", options);
+            if (DEBUG) {
+                console.log("[Debug] QRCodeStyling instance created with options:", options);
+            }
 
 
             // Clear previous display first
