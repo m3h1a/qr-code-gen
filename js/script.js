@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Debounced Generate QR Code Function
     function debouncedGenerateQRCode() {
         clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(generateQRCode, 300); // 300ms debounce
+        debounceTimer = setTimeout(generateQRCode, DEBOUNCE_DURATION_MS); // Use constant for debounce duration
     }
 
     // downloadQRCode Function
