@@ -104,6 +104,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (finalSize <= 0) {
             finalSize = 256; // Default fallback size
         }
+        // Ensure finalSize is not impractically small for QR code generation
+        const MIN_QR_SIZE = 50; // Minimum practical size for a QR code
+        if (finalSize < MIN_QR_SIZE) {
+            // console.warn(`Requested size ${finalSize}px is too small, adjusting to ${MIN_QR_SIZE}px for QR generation.`);
+            // Don't directly change finalSize here as it's used for canvas compositing later.
+            // The QR code library itself should handle small sizes or error out,
+            // but the options passed to it will use the original finalSize.
+            // The user will see a small QR. If getRawData fails for very small QR,
+            // that's a limitation we might have to accept or handle more explicitly.
+            // For now, let the library attempt it. The existing checks are for <= 0.
+        }
 
 
         // Generate emoji image data URI if emojiValue is present
@@ -140,6 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             qrCodeInstance = new QRCodeStyling(options);
+            if (DEBUG) {
+                console.log("[Debug] QRCodeStyling instance created with options:", options);
+            }
+
 
             // Clear previous display first
             qrcodeDisplay.innerHTML = ''; 
@@ -168,14 +183,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                qrCodeInstance.getRawData('png').then(dataUrl => {
+                // Ensure getRawData's result is treated as a standard Promise
+                Promise.resolve(qrCodeInstance.getRawData('png')).then(dataUrl => {
+                    if (DEBUG) {
+                        console.log("[Debug] Raw data URL received:", dataUrl ? dataUrl.substring(0, 100) + "..." : "null/undefined"); // Log first 100 chars
+                    }
+
                     if (!dataUrl) { // Handle cases where dataUrl might be null or undefined
-                        console.error("Error: getRawData returned no data URL.");
+                        console.error("Error: getRawData returned no data URL. Cannot create composite image.");
                         performDefaultAppend();
                         return;
                     }
                     const qrImage = new Image();
                     qrImage.onload = () => {
+                        console.log("[Debug] qrImage.onload triggered. Image dimensions:", qrImage.width, "x", qrImage.height);
+                        if (qrImage.width === 0 || qrImage.height === 0) {
+                            console.error("Error: QR Image loaded but has zero dimensions. Cannot create composite image.");
+                            performDefaultAppend();
+                            return;
+                        }
                         const qrActualSize = qrImage.width; // Actual width of the QR code image from dataUrl
                         const baseFontSize = Math.max(12, Math.floor(qrActualSize * 0.05));
                         const textLineHeight = baseFontSize * 1.2;
@@ -220,16 +246,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         qrcodeDisplay.appendChild(finalOutputCanvas);
                         downloadBtn.classList.remove('hidden');
+                        console.log("[Debug] Composite image canvas appended to display.");
                     };
-                    qrImage.onerror = () => {
-                        console.error("Error loading QR code image for composition.");
-                        qrcodeDisplay.innerHTML = '<p class="text-red-500">Error generating QR preview with text/padding. Displaying QR code only.</p>';
+                    qrImage.onerror = (e) => {
+                        console.error("Error loading QR code image for composition. Event:", e);
+                        // Attempt to provide more details if possible, e.g. from the event or image object
+                        if (qrImage.src && qrImage.src.startsWith('data:')) {
+                            console.error("Source was a data URL, length:", qrImage.src.length);
+                        }
+                        qrcodeDisplay.innerHTML = '<p class="text-red-500">Error loading QR image for composition. Displaying QR code only.</p>';
                         performDefaultAppend(); // Fallback to showing just the QR code
                     };
+                    
+                    console.log("[Debug] Setting qrImage.src with dataUrl. Length:", dataUrl.length);
                     qrImage.src = dataUrl;
+
                 }).catch(error => {
-                    console.error("Error getting QR raw data:", error);
-                    qrcodeDisplay.innerHTML = '<p class="text-red-500">Error fetching QR data. Displaying QR code only.</p>';
+                    console.error("Error in getRawData promise chain or subsequent canvas operations:", error);
+                    qrcodeDisplay.innerHTML = '<p class="text-red-500">Error processing QR data for text/padding. Displaying QR code only.</p>';
                     performDefaultAppend(); // Fallback
                 });
             } else {
@@ -310,43 +344,46 @@ document.addEventListener('DOMContentLoaded', () => {
     // Emoji Picker Logic
     if (emojiPickerButton && emojiPicker && selectedEmojiDisplay) {
         const positionEmojiPicker = () => {
-            // It's tricky to get offsetHeight if the element is 'display: none'.
-            // If it's the first time, or it was hidden, its offsetHeight might be 0.
-            // We can temporarily make it visible but transparent and off-screen to measure.
-            let pickerHeight = emojiPicker.offsetHeight;
+            // Picker is assumed to be visible (no 'hidden' class) when this is called for measurement
+            const pickerRect = emojiPicker.getBoundingClientRect();
+            let pickerHeight = pickerRect.height;
+
+            // Fallback if height is still 0 (e.g. component not fully rendered, though unlikely)
             if (pickerHeight === 0) {
-                emojiPicker.style.visibility = 'hidden';
-                emojiPicker.style.display = 'block'; // Or 'inline-block', 'flex', etc., depending on the component
-                pickerHeight = emojiPicker.offsetHeight;
-                emojiPicker.style.display = 'none'; // Revert to original display state before toggle
-                emojiPicker.style.visibility = 'visible';
-                if (pickerHeight === 0) pickerHeight = 360; // Ultimate fallback
+                console.warn("Emoji picker height is 0 even after removing 'hidden' class. Using fallback height 360px.");
+                pickerHeight = 360; // Fallback height
             }
 
             const buttonRect = emojiPickerButton.getBoundingClientRect();
             const spaceBelow = window.innerHeight - buttonRect.bottom;
             const spaceAbove = buttonRect.top;
 
-            // Reset classes - keep right-0 as it's for horizontal alignment
+            // Reset positioning classes. 'right-0' is set in HTML for horizontal alignment.
             emojiPicker.classList.remove('top-full', 'bottom-full', 'mt-1', 'mb-1');
 
             if (spaceBelow < pickerHeight && spaceAbove > pickerHeight && spaceBelow < spaceAbove) {
-                // If not enough space below, AND enough space above, AND more space above than below
+                // Not enough space below, AND enough space above, AND more space above than below
                 emojiPicker.classList.add('bottom-full', 'mb-1'); // Position above button
             } else {
-                emojiPicker.classList.add('top-full', 'mt-1'); // Default: position below button
+                // Default: position below button
+                emojiPicker.classList.add('top-full', 'mt-1');
             }
         };
 
         emojiPickerButton.addEventListener('click', (event) => {
-            event.stopPropagation(); // Prevent click from closing picker immediately
-            
-            // If picker is about to be shown, position it
-            if (emojiPicker.classList.contains('hidden')) {
-                positionEmojiPicker();
+            event.stopPropagation(); // Prevent click from closing picker immediately via document listener
+
+            const isHidden = emojiPicker.classList.contains('hidden');
+
+            if (isHidden) {
+                // Remove 'hidden' to allow visibility and measurement, then position
+                emojiPicker.classList.remove('hidden');
+                positionEmojiPicker(); 
+                // Picker is now visible and positioned
+            } else {
+                // Just hide it
+                emojiPicker.classList.add('hidden');
             }
-            
-            emojiPicker.classList.toggle('hidden');
         });
 
         emojiPicker.addEventListener('emoji-click', event => {
