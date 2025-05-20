@@ -185,7 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Ensure getRawData's result is treated as a standard Promise
                 Promise.resolve(qrCodeInstance.getRawData('png')).then(dataUrl => {
-                    console.log("[Debug] Raw data URL received:", dataUrl ? dataUrl.substring(0, 100) + "..." : "null/undefined"); // Log first 100 chars
+                    if (DEBUG) {
+                        console.log("[Debug] Raw data URL received:", dataUrl ? dataUrl.substring(0, 100) + "..." : "null/undefined"); // Log first 100 chars
+                    }
 
                     if (!dataUrl) { // Handle cases where dataUrl might be null or undefined
                         console.error("Error: getRawData returned no data URL. Cannot create composite image.");
