@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        // Add any custom colors here if needed
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="css/style.css"> <!-- Will be emptied later -->
     <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
 </head>
@@ -20,7 +32,7 @@
                     <input type="checkbox" id="darkModeToggle" class="sr-only peer">
                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
-                <svg id="moonIcon" class="h-6 w-6 text-gray-400 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg id="moonIcon" class="h-6 w-6 text-gray-400 ml-2 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
             </div>
@@ -77,16 +89,16 @@
                         <div>
                             <label for="dotStyleSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Dot Style:</label>
                             <select id="dotStyleSelect" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md dark:bg-gray-700 dark:text-gray-100">
-                            <option value="square" selected>Square</option>
-                            <option value="dots">Dots</option>
-                            <option value="rounded">Rounded</option>
-                            <option value="extra-rounded">Extra Rounded</option>
-                            <option value="classy">Classy</option>
-                            <option value="classy-rounded">Classy Rounded</option>
-                        </select>
-                    </div>
+                                <option value="square" selected>Square</option>
+                                <option value="dots">Dots</option>
+                                <option value="rounded">Rounded</option>
+                                <option value="extra-rounded">Extra Rounded</option>
+                                <option value="classy">Classy</option>
+                                <option value="classy-rounded">Classy Rounded</option>
+                            </select>
+                        </div>
                     
-                        <div class="sm:col-span-2 relative"> <!-- Added relative for positioning picker -->
+                        <div class="sm:col-span-2 relative">
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Emoji (optional): <span id="selectedEmojiDisplay" class="ml-2 text-xl"></span></label>
                             <button type="button" id="emojiPickerButton" class="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100 text-left">
                                 Select Emoji
@@ -97,24 +109,6 @@
                         <div class="sm:col-span-2">
                             <label for="marginInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">QR Code Margin (px): <span id="marginValueDisplay" class="dark:text-gray-300">0</span>px</label>
                             <input type="range" id="marginInput" min="0" max="100" value="0" class="mt-1 block w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
-                        </div>
-
-                        <!-- Top Text Input -->
-                        <div class="sm:col-span-2">
-                            <label for="topTextInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Top Text (optional):</label>
-                            <input type="text" id="topTextInput" placeholder="Text above QR Code" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100">
-                        </div>
-
-                        <!-- Bottom Text Input -->
-                        <div class="sm:col-span-2">
-                            <label for="bottomTextInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bottom Text (optional):</label>
-                            <input type="text" id="bottomTextInput" placeholder="Text below QR Code" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100">
-                        </div>
-
-                        <!-- Overall Padding Input -->
-                        <div class="sm:col-span-2">
-                            <label for="paddingInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Overall Padding (px): <span id="paddingValueDisplay" class="dark:text-gray-300">0</span>px</label>
-                            <input type="range" id="paddingInput" min="0" max="50" value="0" class="mt-1 block w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
                         </div>
                     </div>
                 </div> <!-- End Left Column -->
