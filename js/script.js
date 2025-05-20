@@ -58,14 +58,29 @@ document.addEventListener('DOMContentLoaded', () => {
             // Fallback for very fast generation that might not update the DOM in time for the canvas search
             // or if the library structure changes.
             // We might need to observe qrcodeDisplay for changes if this becomes an issue.
-            setTimeout(() => {
-                if (qrcodeDisplay.querySelector('canvas') || qrcodeDisplay.querySelector('img')) {
-                    downloadBtn.style.display = 'block';
-                } else {
-                     alert("QR Code generation failed. Please try again.");
-                     downloadBtn.style.display = 'none';
+            const observer = new MutationObserver((mutationsList, observer) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        if (qrcodeDisplay.querySelector('canvas') || qrcodeDisplay.querySelector('img')) {
+                            downloadBtn.style.display = 'block';
+                            observer.disconnect(); // Stop observing once the QR code is detected
+                            return;
+                        }
+                    }
                 }
-            }, 100); // Short delay to allow DOM update
+            });
+
+            // Start observing qrcodeDisplay for child list changes
+            observer.observe(qrcodeDisplay, { childList: true });
+
+            // Fallback in case the QR code generation fails
+            setTimeout(() => {
+                if (!qrcodeDisplay.querySelector('canvas') && !qrcodeDisplay.querySelector('img')) {
+                    alert("QR Code generation failed. Please try again.");
+                    downloadBtn.style.display = 'none';
+                    observer.disconnect(); // Ensure observer is disconnected
+                }
+            }, 5000); // Allow up to 5 seconds for QR code generation
         }
     }
 
