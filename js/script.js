@@ -39,21 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Generate emoji image data URI if emojiValue is present
-        let emojiImage = null;
-        if (emojiValue) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            // Simple heuristic for canvas size based on typical emoji display
-            const emojiCanvasSize = 128; 
-            canvas.width = emojiCanvasSize;
-            canvas.height = emojiCanvasSize;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            // Adjust font size relative to canvas size
-            ctx.font = `${emojiCanvasSize * 0.8}px sans-serif`; 
-            ctx.fillText(emojiValue, emojiCanvasSize / 2, emojiCanvasSize / 2);
-            emojiImage = canvas.toDataURL('image/png');
-        }
+        let emojiImage = emojiValue ? generateEmojiImage(emojiValue) : null;
 
         // Instantiate QRCodeStyling
         try {
