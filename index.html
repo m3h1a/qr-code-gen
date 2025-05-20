@@ -13,12 +13,16 @@
         <div class="container mx-auto flex justify-between items-center max-w-4xl">
             <h1 class="text-2xl font-bold">QR Code Generator</h1>
             <div class="flex items-center">
-                <span class="text-sm mr-2 hidden sm:inline">Light</span>
+                <svg id="sunIcon" class="h-6 w-6 text-yellow-300 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-15.66l-.707.707M4.04 19.96l-.707.707M21 12h-1M4 12H3m15.66 8.66l-.707-.707M4.04 4.04l-.707-.707" />
+                </svg>
                 <label for="darkModeToggle" class="relative inline-flex items-center cursor-pointer">
                     <input type="checkbox" id="darkModeToggle" class="sr-only peer">
                     <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
-                <span class="text-sm ml-2 hidden sm:inline">Dark</span>
+                <svg id="moonIcon" class="h-6 w-6 text-gray-400 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
             </div>
         </div>
     </header>
@@ -94,6 +98,24 @@
                             <label for="marginInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">QR Code Margin (px): <span id="marginValueDisplay" class="dark:text-gray-300">0</span>px</label>
                             <input type="range" id="marginInput" min="0" max="100" value="0" class="mt-1 block w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
                         </div>
+
+                        <!-- Top Text Input -->
+                        <div class="sm:col-span-2">
+                            <label for="topTextInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Top Text (optional):</label>
+                            <input type="text" id="topTextInput" placeholder="Text above QR Code" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100">
+                        </div>
+
+                        <!-- Bottom Text Input -->
+                        <div class="sm:col-span-2">
+                            <label for="bottomTextInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Bottom Text (optional):</label>
+                            <input type="text" id="bottomTextInput" placeholder="Text below QR Code" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-700 dark:text-gray-100">
+                        </div>
+
+                        <!-- Overall Padding Input -->
+                        <div class="sm:col-span-2">
+                            <label for="paddingInput" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Overall Padding (px): <span id="paddingValueDisplay" class="dark:text-gray-300">0</span>px</label>
+                            <input type="range" id="paddingInput" min="0" max="50" value="0" class="mt-1 block w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                        </div>
                     </div>
                 </div> <!-- End Left Column -->
 
@@ -110,6 +132,10 @@
             </div> <!-- End Main Flex Container -->
         </div>
     </main>
+
+    <footer class="w-full text-center p-4 md:p-6 text-gray-600 dark:text-gray-400">
+        build with ❤️ by Agents at Google
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.js"></script>
     <script src="js/script.js"></script>
